@@ -29,4 +29,7 @@ In this exercise, we segment the customers (companies) and transaction. Since th
 
 ## Note
 
-There is no right or wrong method on doing. Everyone can has their own way to do this.
+- There is no right or wrong method on doing. Everyone can has their own way to do this.
+- For deployment, please refer to Price Segmentation V.4 - Deployment.ipynb
+ 
+
