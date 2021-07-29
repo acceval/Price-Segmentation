@@ -98,18 +98,22 @@ if __name__== '__main__':
 	
 	if filepath is not None and features is not None and target_feature is not None:
 
-		model = Model()
+		model = Model('prod')
 		
 		output = model.features_assement(filepath, features , target_feature)
+		print(type(output))
 		print(output)
 		
 		output = model.segmentation(filepath, features, target_feature, index)
+		print(type(output))
 		print(output)
 		
 		output = model.price_segmentation(price_per_segment, price_threshold, segment='segment', target='Price Premium', is_power_index=False)
+		print(type(output))
 		print(output)
 
 		output = model.price_segmentation(price_per_segment, price_threshold_power_index, segment='segment', target='Price Premium', is_power_index=True)
+		print(type(output))
 		print(output)
 	
 		

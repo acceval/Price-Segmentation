@@ -2,16 +2,41 @@ import os
 import pytest
 from Model import Model 
 import json
+import requests
 
-filepath = 'https://github.com/acceval/Price-Segmentation/blob/main/sample_input_file.csv'
-features = ['Customer_Type', 'Customer_Industry', 'Grade', 'Country', 'Destination_Port', 'City_State', 'Shipping_Condition', 'Export/Domestic', 'QUANTITY']
-target_feature = 'Price_Premium'
-index = 'Index'
-price_per_segment = 'https://github.com/acceval/Price-Segmentation/blob/main/price_per_segment.json'
-price_threshold = 'https://github.com/acceval/Price-Segmentation/blob/main/sample_threshold.json'
-price_threshold_power_index = 'https://github.com/acceval/Price-Segmentation/blob/main/sample_threshold_with_power_index.json'
+env = 'prod'
 
-model = Model()
+var = {}
+
+var['local'] = {}
+var['local']['filepath'] = 'sample_input_file.csv'
+var['local']['features'] = ['Customer_Type', 'Customer_Industry', 'Grade', 'Country', 'Destination_Port', 'City_State', 'Shipping_Condition', 'Export/Domestic', 'QUANTITY']
+var['local']['target_feature'] = 'Price_Premium'
+var['local']['index'] = 'Index'
+var['local']['price_per_segment'] = 'price_per_segment.json'
+var['local']['price_threshold'] = 'sample_threshold.json'
+var['local']['price_threshold_power_index'] = 'sample_threshold_with_power_index.json'
+
+var['prod'] = {}
+var['prod']['filepath'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_input_file.csv'
+var['prod']['features'] = ['Customer_Type', 'Customer_Industry', 'Grade', 'Country', 'Destination_Port', 'City_State', 'Shipping_Condition', 'Export/Domestic', 'QUANTITY']
+var['prod']['target_feature'] = 'Price_Premium'
+var['prod']['index'] = 'Index'
+var['prod']['price_per_segment'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_per_segment.json'
+var['prod']['price_threshold'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold.json'
+var['prod']['price_threshold_power_index'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold_with_power_index.json'
+
+
+
+filepath = var[env]['filepath']
+features = var[env]['features']
+target_feature = var[env]['target_feature']
+index = var[env]['index']
+price_per_segment = var[env]['price_per_segment']
+price_threshold = var[env]['price_threshold']
+price_threshold_power_index = var[env]['price_threshold_power_index']
+
+model = Model(env)
 
 # happy path
 
@@ -64,8 +89,16 @@ def test_price_segmentation():
     assert isinstance(output_json['data'], list)
 
     
-    with open(price_threshold) as f:
-        price_threshold_json = json.load(f)
+    if env == 'local':
+
+        with open(price_threshold) as f:
+            price_threshold_json = json.load(f)
+
+    elif env == 'prod':
+
+        resp = requests.get(price_threshold)
+        price_threshold_json = json.loads(resp.text)   
+        
 
 
     assert isinstance(price_threshold_json, dict)
@@ -91,9 +124,16 @@ def test_price_segmentation_with_power_index():
     assert isinstance(output_json['data'], list)
 
     
-    with open(price_threshold) as f:
-        price_threshold_json = json.load(f)
+    if env == 'local':
 
+        with open(price_threshold) as f:
+            price_threshold_json = json.load(f)
+
+    elif env == 'prod':
+
+        resp = requests.get(price_threshold)
+        price_threshold_json = json.loads(resp.text)   
+        
 
     assert isinstance(price_threshold_json, dict)
     assert len(price_threshold_json)==len(output_json['data'][0][target])

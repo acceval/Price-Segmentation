@@ -17,6 +17,7 @@ import string
 import importlib
 import importlib.util
 from import_file import import_file
+import requests
 
 from sklearn.feature_selection import f_regression
 from sklearn.tree import DecisionTreeRegressor, _tree, export_text
@@ -24,17 +25,18 @@ from sklearn.preprocessing import LabelEncoder
 
 class Model:
 
-	def __init__(self):
+	def __init__(self, env='local'):
 		
 
 		self.log = Log()		
 
-		self.random_state = config.RANDOM_STATE
-
+		self.env = env
+		
 		# tree
 		self.max_depth = config.MAX_DEPTH
 		self.min_samples_leaf = config.MIN_SAMPLES_LEAF
 		self.ccp_alpha = config.CCP_ALPHA
+		self.random_state = config.RANDOM_STATE
 
 
 	def status_check(self,filepath:string,features:list, target, index=None):
@@ -85,6 +87,25 @@ class Model:
 				data = pd.read_csv(filepath)
 				all_features = data.columns
 
+				# # dataframe size should be >1
+				if data.shape[0]:
+
+					msg = 'Dataframe shape:',data.shape
+					self.log.print_(msg)
+					print(msg)
+
+				else:
+
+					msg = 'DataFrame has no data'
+					self.log.print_(msg)
+					print(msg)
+
+					status = 0
+					error = msg
+
+					return status, error
+
+
 				# check if index exists and unique
 				if index is not None:
 
@@ -105,9 +126,6 @@ class Model:
 
 						return status, error
 
-					print(index)	
-					print(data[index].is_unique)				
-
 					if not data[index].is_unique:
 
 						msg = 'Index does not have unique values'
@@ -121,6 +139,8 @@ class Model:
 					
 
 				# check if target exists and type is float
+				print(target)
+				print(all_features)
 				if target in all_features:
 
 					msg = 'Target feature exists'
@@ -182,20 +202,6 @@ class Model:
 
 		return status		
 
-	# def check_target(self,target):
-
-	# 	msg = self.__class__.__name__+'.'+utils.get_function_caller()
-	# 	self.log.print_(msg)
-	# 	print(msg)
-
-	# 	if len(target)==1 and type(target)==list:
-
-
-	# 		return 1, target[0]			
-
-	# 	else:
-
-	# 		return 0, None
 
 	def feature_engineering(self,dataframe,features,target):
 
@@ -237,14 +243,15 @@ class Model:
 		self.log.print_(msg)
 		print(msg)
 
+		print('target:',target)
+
 		target = target.strip()
 
 		return_ = dict()		
 
 		if isinstance(filepath, str) and isinstance(features, list) and isinstance(target, str):
 
-
-			status, error = self.status_check(filepath,features,target)				
+			status, error = self.status_check(filepath,features,target)
 
 			if status :
 
@@ -318,16 +325,16 @@ class Model:
 			result = None
 
 
-		return_['status'] = status
-		return_['error'] = error
+		return_["status"] = status
+		return_["error"] = error
 
 		if status==1:
 
-			return_['data'] = result
+			return_["data"] = result
 
 		else:
 
-			return_['data'] = None			
+			return_["data"] = None			
 
 		return_json = json.dumps(return_)
 
@@ -462,7 +469,7 @@ class Model:
 
 					for i, rows in enumerate(output_df.itertuples(),1):
 
-						_str = '{"segment":'+str(rows[1])+', "index":'+str(rows[2])+'}'
+						_str = '{"segment":'+str(rows[1])+', "'+index+'":'+str(rows[2])+'}'
 						outputs.append(_str)
 
 					final_output = '['+', '.join(outputs)+']'
@@ -499,16 +506,16 @@ class Model:
 
 
 		
-		return_['status'] = status
-		return_['error'] = error
+		return_["status"] = status
+		return_["error"] = error
 
 		if status==1:
 
-			return_['data'] = output_json
+			return_["data"] = output_json
 
 		else:
 
-			return_['data'] = None			
+			return_["data"] = None			
 
 		return_ = json.dumps(return_)
 
@@ -578,13 +585,30 @@ class Model:
 				price_per_segment = price_per_segment.strip()
 				price_threshold = price_threshold.strip()
 
-				# read json 
-				with open(price_per_segment) as f:
-					price_per_segment_json = json.load(f)
-		
-				with open(price_threshold) as f:
-					price_threshold_json = json.load(f)
+				print(price_threshold)
 
+				
+				# read json 
+				
+				if self.env == 'local':
+
+					with open(price_per_segment) as f:
+						price_per_segment_json = json.load(f)
+
+	
+					with open(price_threshold) as f:
+						price_threshold_json = json.load(f)
+
+				elif self.env == 'prod':
+
+					resp = requests.get(price_per_segment)
+					price_per_segment_json = json.loads(resp.text)   
+					
+
+					# production
+					resp = requests.get(price_threshold)
+					price_threshold_json = json.loads(resp.text)   
+				
 
 				if (is_power_index==False and isinstance(price_threshold_json, dict)) or (is_power_index==True and isinstance(price_threshold_json, list)):
 
@@ -695,16 +719,16 @@ class Model:
 			result = None
 
 
-		return_['status'] = status
-		return_['error'] = error
+		return_["status"] = status
+		return_["error"] = error
 
 		if status==1:
 
-			return_['data'] = result
+			return_["data"] = result
 
 		else:
 
-			return_['data'] = None			
+			return_["data"] = None			
 
 		return_ = json.dumps(return_)
 
