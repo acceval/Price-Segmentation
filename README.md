@@ -1,3 +1,5 @@
+[![Price Segmentation](https://github.com/acceval/Price-Segmentation/actions/workflows/main.yml/badge.svg)](https://github.com/acceval/Price-Segmentation/actions/workflows/main.yml)
+
 # Price-Segmentation
 
 [Link to the presentation](https://docs.google.com/presentation/d/1cbuh-HAZkFPrj3fEssscG-oDuvXqo1a0rcQUDQjdgjo/edit?usp=sharing)
