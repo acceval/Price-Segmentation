@@ -26,6 +26,7 @@ if __name__== '__main__':
 	today = None
 
 	parser = argparse.ArgumentParser()	
+	parser.add_argument("--env", "-e", help="State the environment", required=True)	
 	parser.add_argument("--filepath", "-p", help="Path to the csv file", required=True)	
 	parser.add_argument("--features", "-f", nargs="*", help="Specify all the features name. Use space as a separator. Feature name should not contain space.", required=True)	
 	parser.add_argument("--target_feature", "-t", help="Target feature, should not contain space", required=True)	
@@ -34,8 +35,13 @@ if __name__== '__main__':
 	parser.add_argument("--price_threshold", "-pt", help="Tresholds for Floor, Target and Offer", required=True)	
 	parser.add_argument("--price_threshold_power_index", "-pi", help="Tresholds for Floor, Target and Offer with Power Index", required=True)	
 	args = parser.parse_args()
-	
 
+	env = None
+	if args.env is None:
+		print("State the environment!!")
+	else:
+		env = args.env
+	
 	filepath = None
 	if args.filepath is None:
 		print("State the filepath!!")
@@ -98,7 +104,7 @@ if __name__== '__main__':
 	
 	if filepath is not None and features is not None and target_feature is not None:
 
-		model = Model('prod')
+		model = Model(env)
 		
 		output = model.features_assement(filepath, features , target_feature)
 		print(type(output))

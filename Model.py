@@ -84,7 +84,20 @@ class Model:
 			# check if the all features in the file
 			try:
 
-				data = pd.read_csv(filepath)
+				try:
+
+					data = pd.read_csv(filepath)
+					
+				except Exception as e:
+
+					msg = 'Cannot read the input file'
+					self.log.print_(msg)
+					print(msg)
+
+					error = msg
+
+					return status, error
+
 				all_features = data.columns
 
 				# # dataframe size should be >1
@@ -139,8 +152,8 @@ class Model:
 					
 
 				# check if target exists and type is float
-				print(target)
-				print(all_features)
+				# print(target)
+				# print(all_features)
 				if target in all_features:
 
 					msg = 'Target feature exists'
@@ -243,13 +256,13 @@ class Model:
 		self.log.print_(msg)
 		print(msg)
 
-		print('target:',target)
-
-		target = target.strip()
+		# print('target:',target)
 
 		return_ = dict()		
 
 		if isinstance(filepath, str) and isinstance(features, list) and isinstance(target, str):
+
+			target = target.strip()
 
 			status, error = self.status_check(filepath,features,target)
 
@@ -313,6 +326,8 @@ class Model:
 
 					status = 0	
 					result = None
+
+
 
 		else:
 
@@ -477,7 +492,6 @@ class Model:
 					output_json = json.loads(final_output)
 
 
-					print('------------------')
 
 				except Exception as e:
 
@@ -564,6 +578,39 @@ class Model:
 			error = msg
 			result = None							
 
+	def read_json(self,json_file):
+
+		msg = self.__class__.__name__+'.'+utils.get_function_caller()
+		self.log.print_(msg)
+		print(msg)
+
+		if isinstance(json_file, str):
+
+			try:
+
+				if self.env == 'local':
+
+					with open(json_file) as f:
+						json_output = json.load(f)
+
+
+				elif self.env == 'prod':
+
+					resp = requests.get(json_file)
+					json_output = json.loads(resp.text)   
+
+			except Exception as e:
+
+				msg = 'There is an error when reading JSON file'
+				self.log.print_(msg)
+				print(msg)
+
+			finally:
+				
+				return json_output
+
+
+
 
 
 	def price_segmentation(self, price_per_segment, price_threshold, segment, target, is_power_index=False):
@@ -578,120 +625,112 @@ class Model:
 		error = None
 
 		if isinstance(price_per_segment, str) and isinstance(price_threshold, str) and isinstance(is_power_index, bool):
-
 			
 			try:
 
 				price_per_segment = price_per_segment.strip()
 				price_threshold = price_threshold.strip()
-
-				print(price_threshold)
-
 				
-				# read json 
+				# read json 				
+				try:
+
+					price_per_segment_json = self.read_json(price_per_segment)
+					price_threshold_json = self.read_json(price_threshold)
 				
-				if self.env == 'local':
+				except Exception as e:
 
-					with open(price_per_segment) as f:
-						price_per_segment_json = json.load(f)
+					msg = 'Error on JSON file'
+					self.log.print_(msg)
+					print(msg)
 
-	
-					with open(price_threshold) as f:
-						price_threshold_json = json.load(f)
+					print(e)
 
-				elif self.env == 'prod':
+					status = 0 
+					error = msg
 
-					resp = requests.get(price_per_segment)
-					price_per_segment_json = json.loads(resp.text)   
-					
+				else:
 
-					# production
-					resp = requests.get(price_threshold)
-					price_threshold_json = json.loads(resp.text)   
-				
+					if (is_power_index==False and isinstance(price_threshold_json, dict)) or (is_power_index==True and isinstance(price_threshold_json, list)):
 
-				if (is_power_index==False and isinstance(price_threshold_json, dict)) or (is_power_index==True and isinstance(price_threshold_json, list)):
+						price_per_segment_df = pd.DataFrame(price_per_segment_json)
 
+						# check if segment and target exists
+						if segment in price_per_segment_df.columns:
 
-					price_per_segment_df = pd.DataFrame(price_per_segment_json)
-
-					# check if segment and target exists
-					if segment in price_per_segment_df.columns:
-
-						if target in price_per_segment_df.columns:
+							if target in price_per_segment_df.columns:
 
 
-							output = list()
-							for i,segment_ in enumerate(price_per_segment_df[segment].unique()):
+								output = list()
+								for i,segment_ in enumerate(price_per_segment_df[segment].unique()):
 
-								line = list()    
-								line.append('"'+segment+'":'+str(segment_))
-								  
-								sub = price_per_segment_df[price_per_segment_df[segment]==segment_]
+									line = list()    
+									line.append('"'+segment+'":'+str(segment_))
+									  
+									sub = price_per_segment_df[price_per_segment_df[segment]==segment_]
 
-								prices = sub[target].values[0]
-												
+									prices = sub[target].values[0]
+													
 
-								if is_power_index:
-									threshold = self.get_threshold(price_threshold_json,is_power_index,segment_field=segment, segment=segment_)
-								else:
-									threshold = self.get_threshold(price_threshold_json,is_power_index,segment_field=segment)
+									if is_power_index:
+										threshold = self.get_threshold(price_threshold_json,is_power_index,segment_field=segment, segment=segment_)
+									else:
+										threshold = self.get_threshold(price_threshold_json,is_power_index,segment_field=segment)
 
 
 
-								_str = []
-								for k,v in threshold.items():
+									_str = []
+									for k,v in threshold.items():
+										
+										tmp = '{"'+str(k)+'":'+str(np.percentile(prices, v*10))+'}'        
+										_str.append(tmp)
+										
 									
-									tmp = '{"'+str(k)+'":'+str(np.percentile(prices, v*10))+'}'        
-									_str.append(tmp)
+									_str = '"'+target+'":['+','.join(_str)+']'
 									
-								
-								_str = '"'+target+'":['+','.join(_str)+']'
-								
 
-								line.append(_str)
-								line = ','.join(line)
-								line = "{"+line+"}"
-								
-								
-								output.append(line)					    
-								
-							output = '['+','.join(output)+']'
+									line.append(_str)
+									line = ','.join(line)
+									line = "{"+line+"}"
+									
+									
+									output.append(line)					    
+									
+								output = '['+','.join(output)+']'
 
-							result = json.loads(output)
+								result = json.loads(output)
 
-							status = 1
+								status = 1
 
 
 
+							else:
+
+								msg = 'Target does not exist'
+								self.log.print_(msg)
+								print(msg)
+
+								status = 0	
+								error = msg
+								result = None
 						else:
 
-							msg = 'Target does not exist'
+							msg = 'There is an error in the JSON threshold file'
 							self.log.print_(msg)
 							print(msg)
 
 							status = 0	
 							error = msg
 							result = None
+
 					else:
 
-						msg = 'There is an error in the JSON threshold file'
+						msg = 'Segment does not exist'
 						self.log.print_(msg)
 						print(msg)
 
 						status = 0	
 						error = msg
 						result = None
-
-				else:
-
-					msg = 'Segment does not exist'
-					self.log.print_(msg)
-					print(msg)
-
-					status = 0	
-					error = msg
-					result = None
 
 					
 			except Exception as e:
