@@ -3,32 +3,9 @@ import pytest
 from Model import Model 
 import json
 import requests
+from config import var
 
 env = 'prod'
-
-var = {}
-
-var['local'] = {}
-var['local']['filepath'] = 'sample_input_file.csv'
-var['local']['features'] = ['Customer_Type', 'Customer_Industry', 'Grade', 'Country', 'Destination_Port', 'City_State', 'Shipping_Condition', 'Export/Domestic', 'QUANTITY']
-var['local']['target_feature'] = 'Price_Premium'
-var['local']['index'] = 'Index'
-var['local']['price_per_segment'] = 'price_per_segment.json'
-var['local']['price_threshold'] = 'sample_threshold.json'
-var['local']['price_threshold_power_index'] = 'sample_threshold_with_power_index.json'
-var['local']['bad_price_per_segment'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/bad_price_per_segment.json'
-
-
-var['prod'] = {}
-var['prod']['filepath'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_input_file.csv'
-var['prod']['features'] = ['Customer_Type', 'Customer_Industry', 'Grade', 'Country', 'Destination_Port', 'City_State', 'Shipping_Condition', 'Export/Domestic', 'QUANTITY']
-var['prod']['target_feature'] = 'Price_Premium'
-var['prod']['index'] = 'Index'
-var['prod']['price_per_segment'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_per_segment.json'
-var['prod']['price_threshold'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold.json'
-var['prod']['price_threshold_power_index'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold_with_power_index.json'
-var['prod']['bad_price_per_segment'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/bad_price_per_segment.json'
-
 
 # default vars
 filepath = var[env]['filepath']
@@ -43,11 +20,11 @@ bad_price_per_segment = var[env]['bad_price_per_segment']
 model = Model(env)
 
 
-def test_features_assement():
+def test_features_assessment():
 
     # happy path
 
-    output = model.features_assement(filepath, features , target_feature)
+    output = model.features_assessment(filepath, features , target_feature)
     assert isinstance(output, str)
 
     output_json = json.loads(output)
@@ -61,17 +38,17 @@ def test_features_assement():
 
     #if the filepath is a random file
     bad_filepath = 'random.txt'
-    output = model.features_assement(bad_filepath, features , target_feature)
+    output = model.features_assessment(bad_filepath, features , target_feature)
     assert isinstance(output, str)
 
     #if the filepath is a csv file but does not exist
     bad_filepath = 'random.csv'
-    output = model.features_assement(bad_filepath, features , target_feature)
+    output = model.features_assessment(bad_filepath, features , target_feature)
     assert isinstance(output, str)
 
     # break the features
     bad_features = ['Customer_Type', 'Customer_Industry', 'Grade', 'Country', 'Destination_Port', 'City_State', 'Shipping_Condition', 'Export/Domestic', 'qty']
-    output = model.features_assement(filepath, bad_features , target_feature)
+    output = model.features_assessment(filepath, bad_features , target_feature)
     assert isinstance(output, str)
 
     output_json = json.loads(output)
@@ -83,7 +60,7 @@ def test_features_assement():
 
     # if the features is string instead of string
     bad_features = 'Customer_Type'
-    output = model.features_assement(filepath, bad_features , target_feature)
+    output = model.features_assessment(filepath, bad_features , target_feature)
     assert isinstance(output, str)
 
     output_json = json.loads(output)
@@ -94,7 +71,7 @@ def test_features_assement():
 
     # if the target is not string
     bad_target_features = ['Customer_Type']
-    output = model.features_assement(filepath, features , bad_target_features)    
+    output = model.features_assessment(filepath, features , bad_target_features)    
     assert isinstance(output, str)
 
     output_json = json.loads(output)
@@ -223,6 +200,12 @@ def test_price_segmentation():
     # break the price_per_segment, JSON file does not follow the rules --> target does not exist
     output = model.price_segmentation(price_per_segment, price_threshold, segment='segment', target='target', is_power_index=False)
     
+    # new scenario
+    # {"price_per_segment" :"price_per_segment.json", "price_threshold":"sample_threshold.json", "segment":"segment","target":"Price Premium"}
+    output = model.price_segmentation('price_per_segment', 'sample_threshold.json', segment='segment', target='Price_Premium', is_power_index=False)
+    output_json = json.loads(output)
+
+    print(output_json)
 
 
 def test_price_segmentation_with_power_index():
@@ -258,6 +241,13 @@ def test_price_segmentation_with_power_index():
     assert len(price_threshold_json.keys()) == len(output_json['data'][0][target])
     assert set(list(price_threshold_json.keys())) == set([k for item in output_json['data'][0][target] for k,v in item.items()]) 
 
+    # pass number to is_power_index
+
+    print('pass number to is_power_index:')
+    output = model.price_segmentation(price_per_segment, price_threshold_power_index, segment='segment', target=target, is_power_index=1)
+    output_json = json.loads(output)
+    assert output_json['status']==0    
+    
 
     # sad path
     # break the price_per_segment, file does not exist

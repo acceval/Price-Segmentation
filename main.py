@@ -106,7 +106,7 @@ if __name__== '__main__':
 
 		model = Model(env)
 		
-		output = model.features_assement(filepath, features , target_feature)
+		output = model.features_assessment(filepath, features , target_feature)
 		print(type(output))
 		print(output)
 		

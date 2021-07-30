@@ -250,7 +250,7 @@ class Model:
 		return dataframe
 			
 
-	def features_assement(self,filepath:string,features:list,target:string):
+	def features_assessment(self,filepath:string,features:list,target:string):
 
 		msg = self.__class__.__name__+'.'+utils.get_function_caller()
 		self.log.print_(msg)
@@ -400,7 +400,7 @@ class Model:
 			return list(inspect.signature(f).parameters)
 
 
-	def segmentation(self,filepath:string,features:list,target:string, index:string, max_depth=None, min_samples_leaf=None, ccp_alpha=None):
+	def segmentation(self,filepath:string,features:list,target:string, index:string, max_depth=None, min_samples_leaf=None):
 
 		msg = self.__class__.__name__+'.'+utils.get_function_caller()
 		self.log.print_(msg)
@@ -412,9 +412,6 @@ class Model:
 
 		if min_samples_leaf is not None:
 			self.min_samples_leaf = min_samples_leaf
-
-		if ccp_alpha is not None:
-			self.ccp_alpha = CCP_ALPHA
 
 
 		return_ = dict()
@@ -631,12 +628,14 @@ class Model:
 				price_per_segment = price_per_segment.strip()
 				price_threshold = price_threshold.strip()
 				
+
 				# read json 				
 				try:
 
 					price_per_segment_json = self.read_json(price_per_segment)
 					price_threshold_json = self.read_json(price_threshold)
 				
+
 				except Exception as e:
 
 					msg = 'Error on JSON file'
@@ -649,6 +648,7 @@ class Model:
 					error = msg
 
 				else:
+
 
 					if (is_power_index==False and isinstance(price_threshold_json, dict)) or (is_power_index==True and isinstance(price_threshold_json, list)):
 
