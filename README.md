@@ -101,16 +101,16 @@ This is the section where the data is calculated and then divided into several c
 Input:
 
 1. price_per_segment: JSON file
-Sample of the input file is [here](https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_per_segment.json). 
+2. Sample of the input file is [here](https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_per_segment.json). 
 
 2. price_threshold: JSON file
-Sample of the input file is [here](https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold.json) for standard/global setting and [here](https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold_with_power_index.json) for setting per each segment. 
+3. Sample of the input file is [here](https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold.json) for standard/global setting and [here](https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold_with_power_index.json) for setting per each segment. 
 
 3. segment: Key name for the segment
-Specify the key name for the segment from price_per_segment file.
+4. Specify the key name for the segment from price_per_segment file.
 
 4. target: Key name for the target
-Specify the target from price_per_segment file.
+5. Specify the target from price_per_segment file.
 
 5. is_power_index: Specify whether each segment has its own threshold. True if it does, and False if it does not.  
 The parameter that specify if the price_threshold is a global config or if it config per segment. 
