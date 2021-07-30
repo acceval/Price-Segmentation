@@ -16,6 +16,8 @@ var['local']['index'] = 'Index'
 var['local']['price_per_segment'] = 'price_per_segment.json'
 var['local']['price_threshold'] = 'sample_threshold.json'
 var['local']['price_threshold_power_index'] = 'sample_threshold_with_power_index.json'
+var['local']['bad_price_per_segment'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/bad_price_per_segment.json'
+
 
 var['prod'] = {}
 var['prod']['filepath'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_input_file.csv'
@@ -25,6 +27,7 @@ var['prod']['index'] = 'Index'
 var['prod']['price_per_segment'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_per_segment.json'
 var['prod']['price_threshold'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold.json'
 var['prod']['price_threshold_power_index'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold_with_power_index.json'
+var['prod']['bad_price_per_segment'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/bad_price_per_segment.json'
 
 
 # default vars
@@ -35,6 +38,7 @@ index = var[env]['index']
 price_per_segment = var[env]['price_per_segment']
 price_threshold = var[env]['price_threshold']
 price_threshold_power_index = var[env]['price_threshold_power_index']
+bad_price_per_segment = var[env]['bad_price_per_segment']
 
 model = Model(env)
 
@@ -210,15 +214,13 @@ def test_price_segmentation():
 
     # sad path
     # break the price_per_segment, file does not exist
-    bad_price_per_segment = 'random.json'
-    output = model.price_segmentation(bad_price_per_segment, price_threshold, segment='segment', target=target, is_power_index=False)
+    random_json = 'random.json'
+    output = model.price_segmentation(random_json, price_threshold, segment='segment', target=target, is_power_index=False)
     
     # break the price_per_segment, JSON file does not follow the rules --> key does not exist
-    bad_price_per_segment = 'bad_price_per_segment.json'
     output = model.price_segmentation(bad_price_per_segment, price_threshold, segment='segment', target=target, is_power_index=False)
     
     # break the price_per_segment, JSON file does not follow the rules --> target does not exist
-    bad_price_per_segment = 'bad_price_per_segment.json'
     output = model.price_segmentation(price_per_segment, price_threshold, segment='segment', target='target', is_power_index=False)
     
 
@@ -259,14 +261,12 @@ def test_price_segmentation_with_power_index():
 
     # sad path
     # break the price_per_segment, file does not exist
-    bad_price_per_segment = 'random.json'
-    output = model.price_segmentation(bad_price_per_segment, price_threshold, segment='segment', target=target, is_power_index=True)
+    random_json = 'random.json'
+    output = model.price_segmentation(random_json, price_threshold, segment='segment', target=target, is_power_index=True)
     
     # break the price_per_segment, JSON file does not follow the rules --> key does not exist
-    bad_price_per_segment = 'bad_price_per_segment.json'
     output = model.price_segmentation(bad_price_per_segment, price_threshold, segment='segment', target=target, is_power_index=True)
     
     # break the price_per_segment, JSON file does not follow the rules --> target does not exist
-    bad_price_per_segment = 'bad_price_per_segment.json'
     output = model.price_segmentation(price_per_segment, price_threshold, segment='segment', target='target', is_power_index=True)
     
