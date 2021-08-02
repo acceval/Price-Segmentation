@@ -117,7 +117,8 @@ Input:
 
 ### Sample Output
 
-```curl -X POST -H 'Accept: */*' -H 'Accept-Encoding: gzip, deflate' -H 'Connection: keep-alive' -H 'Content-Length: 245' -H 'User-Agent: python-requests/2.26.0' -d '{"filepath" :"sample_input_file.csv", "features":["Customer_Type", "Customer_Industry", "Grade", "Country", "Destination_Port", "City_State", "Shipping_Condition", "Export/Domestic", "QUANTITY"], "target_feature":"Price_Premium","index":"Index"}' https://price-segmentation.herokuapp.com/segmentation
+```
+curl -X POST -H 'Accept: */*' -H 'Accept-Encoding: gzip, deflate' -H 'Connection: keep-alive' -H 'Content-Length: 245' -H 'User-Agent: python-requests/2.26.0' -d '{"filepath" :"sample_input_file.csv", "features":["Customer_Type", "Customer_Industry", "Grade", "Country", "Destination_Port", "City_State", "Shipping_Condition", "Export/Domestic", "QUANTITY"], "target_feature":"Price_Premium","index":"Index"}' https://price-segmentation.herokuapp.com/segmentation
 ```
 
 ```
