@@ -38,9 +38,19 @@ In this exercise, we segment the customers (companies) and transaction. Since th
 
 ## Feature Assesment
 
-**This is the section where all the features that users pick assessed**
+Return parameters that picked by users along with the p-values.
 
-Input:
+### Resource URL
+
+```
+https://price-segmentation.herokuapp.com/features_assessment
+```
+
+### Parameters
+
+```
+{"filepath" :"sample_input_file.csv", "features":["Customer_Type", "Customer_Industry", "Grade", "Country", "Destination_Port", "City_State", "Shipping_Condition", "Export/Domestic", "QUANTITY"], "target_feature":"Price_Premium"}
+```
 
 1. filepath: Path to csv file contains all the data
 
@@ -54,13 +64,20 @@ Input:
 
 > Feature that aim to be used as reference for segmentation. In this sample data, the target feature is "Price Premium".
 
-How to call the API:
 
-To be added later
+### Sample Output
 
-Output:
+```
+curl -X POST -H 'Accept: */*' -H 'Accept-Encoding: gzip, deflate' -H 'Connection: keep-alive' -H 'Content-Length: 229' -H 'User-Agent: python-requests/2.26.0' -d '{"filepath" :"sample_input_file.csv", "features":["Customer_Type", "Customer_Industry", "Grade", "Country", "Destination_Port", "City_State", "Shipping_Condition", "Export/Domestic", "QUANTITY"], "target_feature":"Price_Premium"}' https://price-segmentation.herokuapp.com/features_assessment
+{"status": 1, "error": null, "data": "{\"Customer_Type\": 0.0, \"Customer_Industry\": 0.0, \"Grade\": 0.435, \"Country\": 0.0, \"Destination_Port\": 0.0, \"City_State\": 0.301, \"Shipping_Condition\": 0.0, \"Export/Domestic\": 0.0, \"QUANTITY\": 0.0}"}
+```
 
-To be added later
+```
+{"status": 1, "error": null, "data": "{\"Customer_Type\": 0.0, \"Customer_Industry\": 0.0, \"Grade\": 0.435, \"Country\": 0.0, \"Destination_Port\": 0.0, \"City_State\": 0.301, \"Shipping_Condition\": 0.0, \"Export/Domestic\": 0.0, \"QUANTITY\": 0.0}"}
+```
+
+
+
 
 ## Segmentation
 
