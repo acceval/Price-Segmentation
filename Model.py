@@ -681,14 +681,11 @@ class Model:
 
 			# check if number of segments in price per segment = number of segments in threshold
 
-			
-
 			# read json 				
 			try:
 
 				price_per_segment_json = self.read_json(price_per_segment)
-				threshold_json = self.read_json(threshold)			
-
+				threshold_json = self.read_json(threshold)							
 
 			except Exception as e:
 
@@ -705,7 +702,7 @@ class Model:
 
 				# print(price_per_segment_json)				
 				price_per_segment_df = pd.DataFrame(price_per_segment_json)
-				print(price_per_segment_df)
+				# print(price_per_segment_df)
 
 				if (segment in price_per_segment_df.columns):
 				
@@ -716,121 +713,135 @@ class Model:
 
 						segments = price_per_segment_df[segment].unique()
 
-						if not segment in threshold_json and depth==1:
+						try:
 
-							output = list()
-							for i,segment_ in enumerate(segments):
+							if not segment in threshold_json and depth==1:
 
-								line = list()    
-								line.append('"'+segment+'":'+str(segment_))
-															
-								prices = self.get_price_per_segment(price_per_segment_json, segment_,target)
+								output = list()
+								for i,segment_ in enumerate(segments):
 
-								_str = []
-								for k,v in threshold_json.items():
-									
-									tmp = '{"'+str(k)+'":'+str(np.percentile(prices, v*10))+'}'        
-									_str.append(tmp)
-																	
-								_str = '"'+target+'":['+','.join(_str)+']'								
-
-								line.append(_str)
-								line = ','.join(line)								
-								line = "{"+line+"}"
-								
-								output.append(line)
-							
-							output = '['+','.join(output)+']'
-
-							result = json.loads(output)
-
-							# print(result)
-
-
-							status = 1
-
-
-						else:
-
-
-							if self.segment_check(price_per_segment_json,threshold_json,segment) :
-
-
-								# print('depth:',depth)
-								# print(threshold_json)
-								threshold_json_str = str(threshold_json)
-
-								print('Original:',threshold_json_str)
-
-								# result = []
-
-								for i, segment_ in enumerate(segments):
-
+									line = list()    
+									line.append('"'+segment+'":'+str(segment_))
+																
 									prices = self.get_price_per_segment(price_per_segment_json, segment_,target)
 
-									item = threshold_json[segment_]
-									item_str = str(item)
-									new_item_str = str(item)
+									_str = []
+									for k,v in threshold_json.items():
+										
+										tmp = '{"'+str(k)+'":'+str(np.percentile(prices, v*10))+'}'        
+										_str.append(tmp)
+																		
+									_str = '"'+target+'":['+','.join(_str)+']'								
 
-									# print(type(item))
-									# print('Original item:',item)
-									# print('item_str:',item_str)
+									line.append(_str)
+									line = ','.join(line)								
+									line = "{"+line+"}"
 									
-									thresholds = list(utils.find('threshold', item))
-									# print(len(thresholds),thresholds)
-									
-									# print('\n\n\n')
+									output.append(line)
+								
+								output = '['+','.join(output)+']'
 
-									for threshold in thresholds:
+								result = json.loads(output)
 
-										threshold_ = threshold[0]		
-										original_threshold_str = str(threshold_)
-
-										# print('original_threshold_str:',original_threshold_str)							
-
-										for k,v in threshold_.items():
-
-											threshold_.update({k: np.percentile(prices, v*10)})
-
-										# print('new values: ',str(threshold_))
-										# print('Replace: ',original_threshold_str,'with',str(threshold_),'on',item_str)
-
-										# update the original item using string operation
-										new_item_str = new_item_str.replace(original_threshold_str,str(threshold_))
-
-										# print('Before replacement:',item_str)
-										# print('After replacement:',new_item_str)
-
-
-
-										# result.append(item_str)
-										# print('\n\n\n')
-
-
-									# print('replace',item_str,'with',new_item_str)
-									threshold_json_str = threshold_json_str.replace(item_str,new_item_str) 
-
-
-
-									# print('***************************************************')
-								# print('final:',threshold_json_str)
-
-								# # result = json.loads(result)
-								# result = '['+','.join(threshold_json_str).replace("'",'"')+']'
-								result = threshold_json_str.replace("'",'"')
-								result = json.loads(result)
 								# print(result)
+
+
 								status = 1
+
 
 							else:
 
-								msg = 'Segment are not same'
-								self.log.print_(msg)
-								print(msg)
 
-								status = 0	
-								error = msg
-								result = None
+								if self.segment_check(price_per_segment_json,threshold_json,segment) :
+
+
+									# print('depth:',depth)
+									# print(threshold_json)
+									threshold_json_str = str(threshold_json)
+
+									# print('Original:',threshold_json_str)
+
+									# result = []
+
+									for i, segment_ in enumerate(segments):
+
+										prices = self.get_price_per_segment(price_per_segment_json, segment_,target)
+
+										item = threshold_json[segment_]
+										item_str = str(item)
+										new_item_str = str(item)
+
+										# print(type(item))
+										# print('Original item:',item)
+										# print('item_str:',item_str)
+										
+										thresholds = list(utils.find('threshold', item))
+										# print(len(thresholds),thresholds)
+										
+										# print('\n\n\n')
+
+										for threshold in thresholds:
+
+											threshold_ = threshold[0]		
+											original_threshold_str = str(threshold_)
+
+											# print('original_threshold_str:',original_threshold_str)							
+
+											for k,v in threshold_.items():
+
+												threshold_.update({k: np.percentile(prices, v*10)})
+
+											# print('new values: ',str(threshold_))
+											# print('Replace: ',original_threshold_str,'with',str(threshold_),'on',item_str)
+
+											# update the original item using string operation
+											new_item_str = new_item_str.replace(original_threshold_str,str(threshold_))
+
+											# print('Before replacement:',item_str)
+											# print('After replacement:',new_item_str)
+
+
+
+											# result.append(item_str)
+											# print('\n\n\n')
+
+
+										# print('replace',item_str,'with',new_item_str)
+										threshold_json_str = threshold_json_str.replace(item_str,new_item_str) 
+
+
+
+										# print('***************************************************')
+									# print('final:',threshold_json_str)
+
+									# # result = json.loads(result)
+									# result = '['+','.join(threshold_json_str).replace("'",'"')+']'
+									result = threshold_json_str.replace("'",'"')
+									result = json.loads(result)
+									# print(result)
+									status = 1
+
+								else:
+
+									msg = 'Segment are not same'
+									self.log.print_(msg)
+									print(msg)
+
+									status = 0	
+									error = msg
+									result = None
+						except Exception as e:
+
+							msg = 'Error when do price segmentation'
+							self.log.print_(msg)
+							print(msg)
+
+							print(e)
+
+							status = 0	
+							error = msg
+							result = None
+
 
 
 

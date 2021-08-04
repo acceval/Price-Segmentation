@@ -117,13 +117,13 @@ if __name__== '__main__':
 
 		model = Model(env)
 		
-		# output = model.features_assessment(filepath, features , target_feature)
-		# print(type(output))
-		# print(output)
+		output = model.features_assessment(filepath, features , target_feature)
+		print(type(output))
+		print(output)
 		
-		# output = model.segmentation(filepath, features, target_feature, index)
-		# print(type(output))
-		# print(output)
+		output = model.segmentation(filepath, features, target_feature, index)
+		print(type(output))
+		print(output)
 		
 		output = model.price_segmentation(price_per_segment, global_threshold, segment='segment', target='Price Premium')
 		print(type(output))

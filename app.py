@@ -156,14 +156,10 @@ def price_segmentation():
 	else:
 		target = ''
 
-	if 'is_power_index' in data_json:
-		is_power_index = data_json['is_power_index']
-	else:
-		is_power_index = False
 
-	if price_per_segment!='' and price_threshold!='' and segment!='' and target!='' and is_power_index is not None:		
+	if price_per_segment!='' and price_threshold!='' and segment!='' and target!='':		
 
-		output = model.price_segmentation(price_per_segment, price_threshold, segment, target, is_power_index)
+		output = model.price_segmentation(price_per_segment, price_threshold, segment, target)
 
 	else:
 

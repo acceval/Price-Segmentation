@@ -17,8 +17,11 @@ index = 'Index'
 segment = 'segment'
 target = 'Price Premium'
 price_per_segment = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_per_segment.json'
-price_threshold = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold.json'
-price_threshold_power_index = 'sample_threshold_with_power_index.json'
+# price_threshold = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold.json'
+# price_threshold_power_index = 'sample_threshold_with_power_index.json'
+global_threshold = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/global_threshold.json'
+customised_threshold = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/customised_threshold_final.json'
+price_power_index_threshold   = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_power_index_final.json'
 
 
 model = Model(env)
@@ -47,21 +50,30 @@ def test_segmentation_app(app, client):
     assert send_request.status_code == 200
 
 
-def test_price_segmentation_app(app, client):
+def test_price_segmentation_global_threshold_app(app, client):
 
     function = 'price_segmentation' 
     url_ = url+function 
-    data = '{"price_per_segment" :"'+price_per_segment+'", "price_threshold":"'+price_threshold+'", "segment":"'+segment+'","target":"'+target+'"}'
+    data = '{"price_per_segment" :"'+price_per_segment+'", "price_threshold":"'+global_threshold+'", "segment":"'+segment+'","target":"'+target+'"}'
+    send_request = client.post(url_, data=data, follow_redirects=True)    
+
+    assert send_request.status_code == 200
+
+def test_price_segmentation_customized_threshold_app(app, client):
+
+    function = 'price_segmentation' 
+    url_ = url+function 
+    data = '{"price_per_segment" :"'+price_per_segment+'", "price_threshold":"'+customised_threshold+'", "segment":"'+segment+'","target":"'+target+'"}'
     send_request = client.post(url_, data=data, follow_redirects=True)    
 
     assert send_request.status_code == 200
 
 
-def test_price_segmentation_with_power_index_app(app, client):
+def test_price_segmentation_price_power_index_threshold_app(app, client):
 
     function = 'price_segmentation' 
     url_ = url+function 
-    data = '{"price_per_segment" :"'+price_per_segment+'", "price_threshold":"https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold_with_power_index.json", "segment":"'+segment+'","target":"'+target+'","is_power_index":true}'
+    data = '{"price_per_segment" :"'+price_per_segment+'", "price_threshold":"'+price_power_index_threshold+'", "segment":"'+segment+'","target":"'+target+'","is_power_index":true}'
     send_request = client.post(url_, data=data, follow_redirects=True)    
 
     assert send_request.status_code == 200
