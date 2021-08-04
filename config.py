@@ -15,8 +15,8 @@ MIN_SAMPLES_LEAF=100
 CCP_ALPHA=0.001
 
 
-LOCAL_URL = 'http://127.0.0.1:5000/'
-HEROKU_URL = ''
+LOCAL_URL = 'http://127.0.0.1:5050/'
+HEROKU_URL = 'https://price-segmentation.herokuapp.com/'
 
 
 
@@ -28,8 +28,9 @@ var['local']['features'] = ['Customer_Type', 'Customer_Industry', 'Grade', 'Coun
 var['local']['target_feature'] = 'Price_Premium'
 var['local']['index'] = 'Index'
 var['local']['price_per_segment'] = 'price_per_segment.json'
-var['local']['price_threshold'] = 'sample_threshold.json'
-var['local']['price_threshold_power_index'] = 'sample_threshold_with_power_index.json'
+var['local']['global_threshold'] = 'global_threshold.json'
+var['local']['customised_threshold'] = 'customised_threshold_final.json'
+var['local']['price_power_index_threshold']	 = 'price_power_index_final.json'
 var['local']['bad_price_per_segment'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/bad_price_per_segment.json'
 
 
@@ -39,6 +40,7 @@ var['prod']['features'] = ['Customer_Type', 'Customer_Industry', 'Grade', 'Count
 var['prod']['target_feature'] = 'Price_Premium'
 var['prod']['index'] = 'Index'
 var['prod']['price_per_segment'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_per_segment.json'
-var['prod']['price_threshold'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold.json'
-var['prod']['price_threshold_power_index'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold_with_power_index.json'
+var['prod']['global_threshold'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/global_threshold.json'
+var['prod']['customised_threshold'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/customised_threshold_final.json'
+var['prod']['price_power_index_threshold']	 = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_power_index_final.json'
 var['prod']['bad_price_per_segment'] = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/bad_price_per_segment.json'

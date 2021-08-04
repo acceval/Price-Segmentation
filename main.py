@@ -25,6 +25,8 @@ if __name__== '__main__':
 	
 	today = None
 
+	# --global_threshold global_threshold.json --customised_threshold customised_threshold.json --price_power_index price_power_index.json
+
 	parser = argparse.ArgumentParser()	
 	parser.add_argument("--env", "-e", help="State the environment", required=True)	
 	parser.add_argument("--filepath", "-p", help="Path to the csv file", required=True)	
@@ -32,8 +34,9 @@ if __name__== '__main__':
 	parser.add_argument("--target_feature", "-t", help="Target feature, should not contain space", required=True)	
 	parser.add_argument("--index", "-i", help="Set the index", required=True)	
 	parser.add_argument("--price_per_segment", "-pp", help="JSON file with prices per segment", required=True)	
-	parser.add_argument("--price_threshold", "-pt", help="Tresholds for Floor, Target and Offer", required=True)	
-	parser.add_argument("--price_threshold_power_index", "-pi", help="Tresholds for Floor, Target and Offer with Power Index", required=True)	
+	parser.add_argument("--global_threshold", "-gt", help="Global tresholds setting for Floor, Target and Offer", required=True)	
+	parser.add_argument("--customised_threshold", "-ct", help="Customised tresholds setting for Floor, Target and Offer", required=True)	
+	parser.add_argument("--price_power_index", "-ppi", help="Power Price Index setting for Floor, Target and Offer", required=True)	
 	args = parser.parse_args()
 
 	env = None
@@ -73,26 +76,34 @@ if __name__== '__main__':
 	else:
 		price_per_segment = args.price_per_segment 
 
-	price_threshold = None
-	if args.price_threshold is None:
-		print("State the price threshold!!")
+	global_threshold = None
+	if args.global_threshold is None:
+		print("State the global threshold!!")
 	else:
-		price_threshold = args.price_threshold 
+		global_threshold = args.global_threshold 
 
-	price_threshold_power_index = None
-	if args.price_threshold_power_index is None:
-		print("State the price threshold power index!!")
+	customised_threshold = None
+	if args.customised_threshold is None:
+		print("State the customised threshold!!")
 	else:
-		price_threshold_power_index = args.price_threshold_power_index 
+		customised_threshold = args.customised_threshold 
+
+	price_power_index = None
+	if args.price_power_index is None:
+		print("State the price power index threshold!!")
+	else:
+		price_power_index = args.price_power_index 
 
 
+	print('env:',env)
 	print('filepath:',filepath)
 	print('features:',features)
 	print('target_feature:',target_feature)
 	print('index:',index)
 	print('price_per_segment:',price_per_segment)
-	print('price_threshold:',price_threshold)
-	print('price_threshold_power_index:',price_threshold_power_index)
+	print('global_threshold:',global_threshold)
+	print('customised_threshold:',customised_threshold)
+	print('price_power_index:',price_power_index)
 
 	print('-------------------------------------------')
 	
@@ -106,21 +117,39 @@ if __name__== '__main__':
 
 		model = Model(env)
 		
-		output = model.features_assessment(filepath, features , target_feature)
-		print(type(output))
-		print(output)
+		# output = model.features_assessment(filepath, features , target_feature)
+		# print(type(output))
+		# print(output)
 		
-		output = model.segmentation(filepath, features, target_feature, index)
-		print(type(output))
-		print(output)
+		# output = model.segmentation(filepath, features, target_feature, index)
+		# print(type(output))
+		# print(output)
 		
-		output = model.price_segmentation(price_per_segment, price_threshold, segment='segment', target='Price Premium', is_power_index=False)
+		output = model.price_segmentation(price_per_segment, global_threshold, segment='segment', target='Price Premium')
 		print(type(output))
 		print(output)
 
-		output = model.price_segmentation(price_per_segment, price_threshold_power_index, segment='segment', target='Price Premium', is_power_index=True)
+		print('===================================')
+
+		output = model.price_segmentation(price_per_segment, customised_threshold, segment='segment', target='Price Premium')
 		print(type(output))
 		print(output)
+
+		print('===================================')
+
+		output = model.price_segmentation(price_per_segment, price_power_index, segment='segment', target='Price Premium')
+		print(type(output))
+		print(output)
+
+
+
+		# output = model.price_segmentation(price_per_segment, price_threshold, segment='segment', target='Price Premium', is_power_index=False)
+		# print(type(output))
+		# print(output)
+
+		# output = model.price_segmentation(price_per_segment, price_threshold_power_index, segment='segment', target='Price Premium', is_power_index=True)
+		# print(type(output))
+		# print(output)
 	
 		
 
