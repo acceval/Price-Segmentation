@@ -164,31 +164,46 @@ Input:
 
 > The parameter that specify if the price_threshold is a global config or if it config per segment. 
 
-**Without Power Index**
+**Global Setting**
 
 ### How To Call
 
 ```
-curl -X POST -H 'Accept: application/json' -H 'Accept-Encoding: gzip, deflate' -H 'Connection: keep-alive' -H 'Content-Length: 268' -H 'Content-type: application/json' -H 'User-Agent: python-requests/2.26.0' -d '{"price_per_segment" :"https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_per_segment.json", "price_threshold":"https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold.json", "segment":"segment","target":"Price Premium"}' https://price-segmentation.herokuapp.com/price_segmentation
+curl -X POST -H 'Accept: application/json' -H 'Accept-Encoding: gzip, deflate' -H 'Connection: keep-alive' -H 'Content-Length: 268' -H 'Content-type: application/json' -H 'User-Agent: python-requests/2.26.0' -d '{"price_per_segment" :"https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_per_segment.json", "price_threshold":"https://raw.githubusercontent.com/acceval/Price-Segmentation/main/global_threshold.json", "segment":"segment","target":"Price Premium"}' https://price-segmentation.herokuapp.com/price_segmentation
 ```
 
 ```
 {"status": 1, "error": null, "data": [{"segment": 0, "Price Premium": [{"floor": -117.2439732}, {"target": -62.73831199999996}, {"offer": -35.308112}]}, {"segment": 1, "Price Premium": [{"floor": -109.7022871}, {"target": -78.0353299999999}, {"offer": -52.61658969999994}]}, {"segment": 2, "Price Premium": [{"floor": -123.0680013}, {"target": -102.85694450000001}, {"offer": -95.85126260000007}]}, {"segment": 3, "Price Premium": [{"floor": -54.04887149999983}, {"target": -25.792374}, {"offer": -14.172910500000066}]}, {"segment": 4, "Price Premium": [{"floor": -22.073945599999995}, {"target": -7.451125999999949}, {"offer": -5.216719200000074}]}, {"segment": 5, "Price Premium": [{"floor": -58.42146240000001}, {"target": -22.161956}, {"offer": -6.679723599999941}]}]}
 ```
 
-**With Power Index**
+**Customized Setting**
 
 ### How To Call
 
 ```
-curl -X POST -H 'Accept: application/json' -H 'Accept-Encoding: gzip, deflate' -H 'Connection: keep-alive' -H 'Content-Length: 307' -H 'Content-type: application/json' -H 'User-Agent: python-requests/2.26.0' -d '{"price_per_segment" :"https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_per_segment.json", "price_threshold":"https://raw.githubusercontent.com/acceval/Price-Segmentation/main/sample_threshold_with_power_index.json", "segment":"segment","target":"Price Premium","is_power_index":true}' https://price-segmentation.herokuapp.com/price_segmentation
+curl -X POST -H 'Accept: application/json' -H 'Accept-Encoding: gzip, deflate' -H 'Connection: keep-alive' -H 'Content-Length: 278' -H 'Content-type: application/json' -H 'User-Agent: python-requests/2.26.0' -d '{"price_per_segment" :"https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_per_segment.json", "price_threshold":"https://raw.githubusercontent.com/acceval/Price-Segmentation/main/customised_threshold_final.json", "segment":"segment","target":"Price Premium"}' https://price-segmentation.herokuapp.com/price_segmentation
 ```
 
 ### Sample Output
 
 ```
-{"status": 1, "error": null, "data": [{"segment": 0, "Price Premium": [{"floor": -143.50034392}, {"target": -62.73831199999996}, {"offer": -33.1293080800001}]}, {"segment": 1, "Price Premium": [{"floor": -103.94596299999999}, {"target": -68.0373892500001}, {"offer": -51.04125}]}, {"segment": 2, "Price Premium": [{"floor": -151.53698607}, {"target": -101.8658244}, {"offer": -93.46905340000006}]}, {"segment": 3, "Price Premium": [{"floor": -89.18204996999984}, {"target": -25.792374}, {"offer": -14.172910500000066}]}, {"segment": 4, "Price Premium": [{"floor": -30.706449919999997}, {"target": -5.80580600000003}, {"offer": -4.323933600000028}]}, {"segment": 5, "Price Premium": [{"floor": -103.08434823999964}, {"target": -12.077351999999951}, {"offer": -7.827652399999973}]}]}
+{"status": 1, "error": null, "data": [{"segment": 0, "threshold": [{"floor": -143.50034392, "target": -62.73831199999996, "offer": -33.1293080800001}]}, {"segment": 1, "threshold": [{"floor": -103.94596299999999, "target": -68.0373892500001, "offer": -51.04125}]}, {"segment": 2, "threshold": [{"floor": -151.53698607, "target": -101.8658244, "offer": -93.46905340000006}]}, {"segment": 3, "threshold": [{"floor": -89.18204996999984, "target": -25.792374, "offer": -14.172910500000066}]}, {"segment": 4, "threshold": [{"floor": -30.706449919999997, "target": -5.80580600000003, "offer": -4.323933600000028}]}, {"segment": 5, "threshold": [{"floor": -103.08434823999964, "target": -12.077351999999951, "offer": -7.827652399999973}]}]}
 ```
+
+**Price Power Index Setting**
+
+### How To Call
+
+```
+curl -X POST -H 'Accept: application/json' -H 'Accept-Encoding: gzip, deflate' -H 'Connection: keep-alive' -H 'Content-Length: 275' -H 'Content-type: application/json' -H 'User-Agent: python-requests/2.26.0' -d '{"price_per_segment" :"https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_per_segment.json", "price_threshold":"https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_power_index_final.json", "segment":"segment","target":"Price Premium"}' https://price-segmentation.herokuapp.com/price_segmentation
+```
+
+### Sample Output
+
+```{"status": 1, "error": null, "data": [{"segment": 0, "item": [{"price power index": "4 - 5", "threshold": [{"floor": -143.50034392, "target": -62.73831199999996, "offer": -33.1293080800001}]}, {"price power index": "3 - 4", "threshold": [{"floor": -139.23654784000001, "target": -63.36826991999993, "offer": -33.64101704000008}]}, {"price power index": "2 - 3", "threshold": [{"floor": -134.97275176, "target": -63.05329095999994, "offer": -34.19630040000005}]}, {"price power index": "1 - 2", "threshold": [{"floor": -139.23654784000001, "target": -61.716013919999995, "offer": -33.1293080800001}]}, {"price power index": "0 - 1", "threshold": [{"floor": -126.4451596, "target": -63.683248879999915, "offer": -33.64101704000008}]}]}, {"segment": 1, "item": [{"price power index": "4 - 5", "threshold": [{"floor": -137.70166718000002, "target": -78.0353299999999, "offer": -50.8079499999999}]}, {"price power index": "3 - 4", "threshold": [{"floor": -137.60467436000002, "target": -79.03145911999994, "offer": -50.842326949999915}]}, {"price power index": "2 - 3", "threshold": [{"floor": -137.60192, "target": -78.0353299999999, "offer": -51.04125}]}, {"price power index": "1 - 2", "threshold": [{"floor": -137.60467436000002, "target": -77.10434923999999, "offer": -50.8079499999999}]}, {"price power index": "0 - 1", "threshold": [{"floor": -135.74192, "target": -80.49304142999999, "offer": -50.842326949999915}]}]}, {"segment": 2, "item": [{"price power index": "4 - 5", "threshold": [{"floor": -151.53698607, "target": -102.85694450000001, "offer": -91.64181228000002}]}, {"price power index": "3 - 4", "threshold": [{"floor": -148.07397214, "target": -103.15010872, "offer": -92.55543284000005}]}, {"price power index": "2 - 3", "threshold": [{"floor": -144.61095821, "target": -103.00352661000001, "offer": -93.46905340000006}]}, {"price power index": "1 - 2", "threshold": [{"floor": -148.07397214, "target": -102.41719817, "offer": -91.64181228000002}]}, {"price power index": "0 - 1", "threshold": [{"floor": -137.68493035, "target": -103.29669083, "offer": -92.55543284000005}]}]}, {"segment": 3, "item": [{"price power index": "4 - 5", "threshold": [{"floor": -89.18204996999984, "target": -25.792374, "offer": -11.7081613099997}]}, {"price power index": "3 - 4", "threshold": [{"floor": -82.94041993999979, "target": -26.73440384, "offer": -12.910625929999833}]}, {"price power index": "2 - 3", "threshold": [{"floor": -76.69878990999972, "target": -26.26338892, "offer": -13.6040626499999}]}, {"price power index": "1 - 2", "threshold": [{"floor": -82.94041993999979, "target": -24.45675328999988, "offer": -11.7081613099997}]}, {"price power index": "0 - 1", "threshold": [{"floor": -63.91910259999999, "target": -27.703839720000005, "offer": -12.910625929999833}]}]}, {"segment": 4, "item": [{"price power index": "4 - 5", "threshold": [{"floor": -30.706449919999997, "target": -7.451125999999949, "offer": -3.600653439999995}]}, {"price power index": "3 - 4", "threshold": [{"floor": -29.82905984, "target": -7.89042135999995, "offer": -3.9668193600000126}]}, {"price power index": "2 - 3", "threshold": [{"floor": -28.951669759999998, "target": -7.670773679999949, "offer": -4.323933600000028}]}, {"price power index": "1 - 2", "threshold": [{"floor": -29.82905984, "target": -6.792182959999948, "offer": -3.600653439999995}]}, {"price power index": "0 - 1", "threshold": [{"floor": -27.1968896, "target": -8.110069039999951, "offer": -3.9668193600000126}]}]}, {"segment": 5, "item": [{"price power index": "4 - 5", "threshold": [{"floor": -103.08434823999964, "target": -22.161956, "offer": -5.53071999999997}]}, {"price power index": "3 - 4", "threshold": [{"floor": -92.08843319999951, "target": -22.836738719999918, "offer": -5.584114800000002}]}, {"price power index": "2 - 3", "threshold": [{"floor": -82.7002747999998, "target": -22.58583535999998, "offer": -5.853832400000018}]}, {"price power index": "1 - 2", "threshold": [{"floor": -92.08843319999951, "target": -18.573540479999707, "offer": -5.53071999999997}]}, {"price power index": "0 - 1", "threshold": [{"floor": -74.39361000000078, "target": -23.054883839999942, "offer": -5.584114800000002}]}]}]}
+```
+
+
 
 
 
