@@ -160,10 +160,6 @@ Input:
 
 > Specify the target from price_per_segment file.
 
-5. is_power_index: Specify whether each segment has its own threshold. True if it does, and False if it does not.  
-
-> The parameter that specify if the price_threshold is a global config or if it config per segment. 
-
 **Global Setting**
 
 ### How To Call
