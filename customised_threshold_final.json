@@ -1,0 +1,26 @@
+[
+  {
+    "segment":0,
+    "threshold":[{"floor": 0.01, "target": 0.5, "offer": 0.99}]
+ },
+ {
+    "segment":1,
+    "threshold":[{"floor": 0.15, "target": 0.65, "offer": 0.95}]
+ },
+ {
+    "segment":2,
+    "threshold":[{"floor": 0.01, "target": 0.65, "offer": 0.95}]
+ },
+ {
+    "segment":3,
+    "threshold":[{"floor": 0.01, "target": 0.50, "offer": 0.90}]
+ },
+ {
+    "segment":4,
+    "threshold":[{"floor": 0.01, "target": 0.75, "offer": 0.95}]
+ },
+ {
+    "segment":5,
+    "threshold":[{"floor": 0.01, "target": 0.65, "offer": 0.85}]
+ }
+ ]
