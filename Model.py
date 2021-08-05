@@ -731,7 +731,8 @@ class Model:
 										tmp = '{"'+str(k)+'":'+str(np.percentile(prices, v*10))+'}'        
 										_str.append(tmp)
 																		
-									_str = '"'+target+'":['+','.join(_str)+']'								
+									# _str = '"'+target+'":['+','.join(_str)+']'								
+									_str = '"threshold":['+','.join(_str)+']'								
 
 									line.append(_str)
 									line = ','.join(line)								
