@@ -169,7 +169,7 @@ curl -X POST -H 'Accept: application/json' -H 'Accept-Encoding: gzip, deflate' -
 ```
 
 ```
-{"status": 1, "error": null, "data": [{"segment": 0, "Price Premium": [{"floor": -117.2439732}, {"target": -62.73831199999996}, {"offer": -35.308112}]}, {"segment": 1, "Price Premium": [{"floor": -109.7022871}, {"target": -78.0353299999999}, {"offer": -52.61658969999994}]}, {"segment": 2, "Price Premium": [{"floor": -123.0680013}, {"target": -102.85694450000001}, {"offer": -95.85126260000007}]}, {"segment": 3, "Price Premium": [{"floor": -54.04887149999983}, {"target": -25.792374}, {"offer": -14.172910500000066}]}, {"segment": 4, "Price Premium": [{"floor": -22.073945599999995}, {"target": -7.451125999999949}, {"offer": -5.216719200000074}]}, {"segment": 5, "Price Premium": [{"floor": -58.42146240000001}, {"target": -22.161956}, {"offer": -6.679723599999941}]}]}
+{\"status\": 1, \"error\": null, \"data\": [{\"segment\": 0, \"threshold\": [{\"floor\": -117.2439732}, {\"target\": -62.73831199999996}, {\"offer\": -35.308112}]}, {\"segment\": 1, \"threshold\": [{\"floor\": -109.7022871}, {\"target\": -78.0353299999999}, {\"offer\": -52.61658969999994}]}, {\"segment\": 2, \"threshold\": [{\"floor\": -123.0680013}, {\"target\": -102.85694450000001}, {\"offer\": -95.85126260000007}]}, {\"segment\": 3, \"threshold\": [{\"floor\": -54.04887149999983}, {\"target\": -25.792374}, {\"offer\": -14.172910500000066}]}, {\"segment\": 4, \"threshold\": [{\"floor\": -22.073945599999995}, {\"target\": -7.451125999999949}, {\"offer\": -5.216719200000074}]}, {\"segment\": 5, \"threshold\": [{\"floor\": -58.42146240000001}, {\"target\": -22.161956}, {\"offer\": -6.679723599999941}]}]}
 ```
 
 **Customized Setting**
