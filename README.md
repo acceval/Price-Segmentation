@@ -168,6 +168,8 @@ Input:
 curl -X POST -H 'Accept: application/json' -H 'Accept-Encoding: gzip, deflate' -H 'Connection: keep-alive' -H 'Content-Length: 268' -H 'Content-type: application/json' -H 'User-Agent: python-requests/2.26.0' -d '{"price_per_segment" :"https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_per_segment.json", "price_threshold":"https://raw.githubusercontent.com/acceval/Price-Segmentation/main/global_threshold.json", "segment":"segment","target":"Price Premium"}' https://price-segmentation.herokuapp.com/price_segmentation
 ```
 
+### Sample Output
+
 ```
 {\"status\": 1, \"error\": null, \"data\": [{\"segment\": 0, \"threshold\": [{\"floor\": -117.2439732}, {\"target\": -62.73831199999996}, {\"offer\": -35.308112}]}, {\"segment\": 1, \"threshold\": [{\"floor\": -109.7022871}, {\"target\": -78.0353299999999}, {\"offer\": -52.61658969999994}]}, {\"segment\": 2, \"threshold\": [{\"floor\": -123.0680013}, {\"target\": -102.85694450000001}, {\"offer\": -95.85126260000007}]}, {\"segment\": 3, \"threshold\": [{\"floor\": -54.04887149999983}, {\"target\": -25.792374}, {\"offer\": -14.172910500000066}]}, {\"segment\": 4, \"threshold\": [{\"floor\": -22.073945599999995}, {\"target\": -7.451125999999949}, {\"offer\": -5.216719200000074}]}, {\"segment\": 5, \"threshold\": [{\"floor\": -58.42146240000001}, {\"target\": -22.161956}, {\"offer\": -6.679723599999941}]}]}
 ```
