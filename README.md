@@ -207,8 +207,8 @@ curl -X POST -H 'Accept: application/json' -H 'Accept-Encoding: gzip, deflate' -
 
 For quantity cutoff if the UoM is in MT, use below bracket if necessary:
 
-- 0 - 60
-- 61 - 150
-- 151 - 250
-- 251 - 350
-- 350.0
+- Bracket 1: 0 - 60
+- Bracket 2: 61 - 150
+- Bracket 3: 151 - 250
+- Bracket 4: 251 - 350
+- Bracket 5: >350.0
