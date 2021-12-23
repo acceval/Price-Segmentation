@@ -9,6 +9,11 @@ import inspect
 import config
 
 
+
+def get_uuid():
+    return md5(str(localtime()).encode('utf-8')).hexdigest()
+
+
 def find(key, dictionary):
 
     for k, v in dictionary.items():

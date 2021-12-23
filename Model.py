@@ -23,16 +23,17 @@ import requests
 from sklearn.feature_selection import f_regression
 from sklearn.tree import DecisionTreeRegressor, _tree, export_text
 from sklearn.preprocessing import LabelEncoder
+import statsmodels.api as sm
 
 class Model:
 
 	def __init__(self, env='local'):
 		
-
-		self.log = Log()		
+		self.uuid = utils.get_uuid()
+		self.log = Log(self.uuid)		
 
 		self.env = env
-		
+
 		# tree
 		self.max_depth = config.MAX_DEPTH
 		self.min_samples_leaf = config.MIN_SAMPLES_LEAF
@@ -251,11 +252,38 @@ class Model:
 		return dataframe
 			
 
-	def features_assessment(self,filepath:string,features:list,target:string):
+	def backwardElimination(self, x, Y, sl, columns):
 
 		msg = self.__class__.__name__+'.'+utils.get_function_caller()
 		self.log.print_(msg)
 		print(msg)
+
+		numVars = len(x[0])
+		pvals = []
+		for i in range(0, numVars):
+			regressor_OLS = sm.OLS(Y, x).fit()
+			maxVar = max(regressor_OLS.pvalues).astype(float)
+			if maxVar > sl:
+				for j in range(0, x.shape[1] - i):
+					if (regressor_OLS.pvalues[j].astype(float) == maxVar):
+						x = np.delete(x, j, 1)
+						columns = np.delete(columns, j)
+			else:
+				pvals.append(maxVar)
+					   
+		regressor_OLS.summary()
+		return x, columns, pvals
+
+
+	def features_assessment(self,filepath:string,features:list,target:string,SL=0.05):
+
+		msg = self.__class__.__name__+'.'+utils.get_function_caller()
+		self.log.print_(msg)
+		print(msg)
+
+		params = locals()
+		msg = 'params:'+str(params)
+		self.log.print_(msg)
 
 		# print('target:',target)
 
@@ -288,22 +316,36 @@ class Model:
 						# do the feature assement
 
 						data = self.feature_engineering(data,features,target)
+						
+						selected_columns = features
+						data_modeled, selected_columns, pvals = self.backwardElimination(data[features].values, data[target].values, SL, selected_columns)
 
-						if len(features)==1:
+						# print(selected_columns, pvals)
 
-							freg = f_regression(np.array(data[features].values.reshape(-1, 1),dtype=float), np.array(data[target].values.ravel(),dtype=float))
+						feature_pval = {}
+						if len(selected_columns)==len(pvals):
+							for selected_column, pval in zip(selected_columns,pvals):
+								feature_pval[selected_column] = str(round(pval, 3))
+						
+						for feature in features:
+							if feature not in feature_pval.keys():
+								feature_pval[feature] = '>'+str(SL)
 
-						else:
+						# if len(features)==1:
 
-							freg = f_regression(np.array(data[features].values,dtype=float), np.array(data[target].values.ravel(),dtype=float))
+						# 	freg = f_regression(np.array(data[features].values.reshape(-1, 1),dtype=float), np.array(data[target].values.ravel(),dtype=float))
 
-						p_values = freg[1]
+						# else:
 
-						feature_pval = dict()
+						# 	freg = f_regression(np.array(data[features].values,dtype=float), np.array(data[target].values.ravel(),dtype=float))
 
-						for p_value, feature in zip(p_values,features):
+						# p_values = freg[1]
+
+						# feature_pval = dict()
+
+						# for p_value, feature in zip(p_values,features):
 				
-							feature_pval[feature] = round(p_value, 3)    
+						# 	feature_pval[feature] = round(p_value, 3)    
 
 						
 						result = json.dumps(feature_pval)
@@ -406,6 +448,10 @@ class Model:
 		msg = self.__class__.__name__+'.'+utils.get_function_caller()
 		self.log.print_(msg)
 		print(msg)
+
+		params = locals()
+		msg = 'params:'+str(params)
+		self.log.print_(msg)
 		
 		# tree
 		if max_depth is not None:
@@ -666,6 +712,11 @@ class Model:
 		msg = self.__class__.__name__+'.'+utils.get_function_caller()
 		self.log.print_(msg)
 		print(msg)
+
+		params = locals()
+		msg = 'params:'+str(params)
+		self.log.print_(msg)
+
 
 		return_ = dict()
 

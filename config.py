@@ -9,6 +9,8 @@ VERSION = '0.1.0'
 
 RANDOM_STATE = 42
 
+SL = 0.05
+
 # tree setting
 MAX_DEPTH=3
 MIN_SAMPLES_LEAF=100
