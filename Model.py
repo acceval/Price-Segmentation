@@ -322,14 +322,14 @@ class Model:
 
 						# print(selected_columns, pvals)
 
-						feature_pval = {}
-						if len(selected_columns)==len(pvals):
-							for selected_column, pval in zip(selected_columns,pvals):
-								feature_pval[selected_column] = str(round(pval, 3))
+						# feature_pval = {}
+						# if len(selected_columns)==len(pvals):
+						# 	for selected_column, pval in zip(selected_columns,pvals):
+						# 		feature_pval[selected_column] = str(round(pval, 3))
 						
-						for feature in features:
-							if feature not in feature_pval.keys():
-								feature_pval[feature] = '>'+str(SL)
+						# for feature in features:
+						# 	if feature not in feature_pval.keys():
+						# 		feature_pval[feature] = '>'+str(SL)
 
 						# if len(features)==1:
 
@@ -341,12 +341,17 @@ class Model:
 
 						# p_values = freg[1]
 
-						# feature_pval = dict()
+						lin_reg = sm.OLS(np.array(data[target].values.reshape(-1, 1),dtype=float),np.array(data[features].values,dtype=float)).fit()
+						p_values = lin_reg.summary2().tables[1]['P>|t|'].values						
 
-						# for p_value, feature in zip(p_values,features):
+						feature_pval = dict()
+
+						for p_value, feature in zip(p_values,features):
 				
-						# 	feature_pval[feature] = round(p_value, 3)    
+							feature_pval[feature] = round(p_value, 3)    
 
+
+						print(feature_pval)
 						
 						result = json.dumps(feature_pval)
 
