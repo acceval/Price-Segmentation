@@ -24,7 +24,7 @@ from sklearn.feature_selection import f_regression
 from sklearn.tree import DecisionTreeRegressor, _tree, export_text
 from sklearn.preprocessing import LabelEncoder
 import statsmodels.api as sm
-from CHAID import Tree
+# from CHAID import Tree
 
 class Model:
 
