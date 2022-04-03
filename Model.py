@@ -635,6 +635,8 @@ class Model:
 
 		if isinstance(json_file, str):
 
+			json_output = None
+
 			try:
 
 				if self.env == 'local':
