@@ -24,6 +24,7 @@ from sklearn.feature_selection import f_regression
 from sklearn.tree import DecisionTreeRegressor, _tree, export_text
 from sklearn.preprocessing import LabelEncoder
 import statsmodels.api as sm
+# from CHAID import Tree
 
 class Model:
 
@@ -230,19 +231,20 @@ class Model:
 		for col,type_ in zip(dataframe[features].columns,dataframe[features].dtypes):
 			
 			if str(type_)=='object' and col!=target:        
-				categorical_features.append(col)        
+				categorical_features.append(col)
+				dataframe[col] = dataframe[col].astype(str)       
 			else:
 				numerical_features.append(col)
 
 		# handle empty values
 		for categorical_feature in categorical_features:
 
+			dataframe.replace({categorical_feature:{'NaN':'No Data'}},inplace=True)
 			dataframe[categorical_feature].fillna('No data', inplace=True)
 
 		for numerical_feature in numerical_features:
 
 			dataframe[numerical_feature].fillna(dataframe[numerical_feature].median(), inplace=True)
-
 
 		# feature engineering
 		for categorical_feature in categorical_features:
@@ -252,27 +254,32 @@ class Model:
 		return dataframe
 			
 
-	def backwardElimination(self, x, Y, sl, columns):
+	def backwardElimination(self, df, features, target, sl):
 
 		msg = self.__class__.__name__+'.'+utils.get_function_caller()
 		self.log.print_(msg)
 		print(msg)
 
-		numVars = len(x[0])
-		pvals = []
-		for i in range(0, numVars):
-			regressor_OLS = sm.OLS(Y, x).fit()
-			maxVar = max(regressor_OLS.pvalues).astype(float)
-			if maxVar > sl:
-				for j in range(0, x.shape[1] - i):
-					if (regressor_OLS.pvalues[j].astype(float) == maxVar):
-						x = np.delete(x, j, 1)
-						columns = np.delete(columns, j)
-			else:
-				pvals.append(maxVar)
-					   
-		regressor_OLS.summary()
-		return x, columns, pvals
+		pmax = 1
+		pvals = {}
+		while (len(features)>0):
+		    X_1 = df[features]
+		    X_1 = sm.add_constant(X_1)
+		    y = df[target]
+		    model = sm.OLS(y,X_1).fit()		    
+		    p = pd.Series(model.pvalues.values[1:],index = features) 
+		    pmax = max(p)
+		    feature_with_p_max = p.idxmax()		    
+		    if(pmax>0.05):
+		        pvals[feature_with_p_max] = round(pmax,3)
+		        features.remove(feature_with_p_max)
+		    else:
+		        for index, value in p.items():
+		            pvals[index] = round(value, 3) 
+		            
+		        break
+
+		return pvals
 
 
 	def features_assessment(self,filepath:string,features:list,target:string,SL=0.05):
@@ -317,8 +324,8 @@ class Model:
 
 						data = self.feature_engineering(data,features,target)
 						
-						selected_columns = features
-						data_modeled, selected_columns, pvals = self.backwardElimination(data[features].values, data[target].values, SL, selected_columns)
+						pvals = self.backwardElimination(data,features,target,SL)
+
 
 						# print(selected_columns, pvals)
 
@@ -341,19 +348,18 @@ class Model:
 
 						# p_values = freg[1]
 
-						lin_reg = sm.OLS(np.array(data[target].values.reshape(-1, 1),dtype=float),np.array(data[features].values,dtype=float)).fit()
-						p_values = lin_reg.summary2().tables[1]['P>|t|'].values						
+						# lin_reg = sm.OLS(np.array(data[target].values.reshape(-1, 1),dtype=float),np.array(data[features].values,dtype=float)).fit()
+						# p_values = lin_reg.summary2().tables[1]['P>|t|'].values						
 
-						feature_pval = dict()
+						# feature_pval = dict()
 
-						for p_value, feature in zip(p_values,features):
+						# for p_value, feature in zip(p_values,features):
 				
-							feature_pval[feature] = round(p_value, 3)    
+						# 	feature_pval[feature] = round(p_value, 3)    
 
 
-						print(feature_pval)
 						
-						result = json.dumps(feature_pval)
+						result = json.dumps(pvals)
 
 					else:
 
