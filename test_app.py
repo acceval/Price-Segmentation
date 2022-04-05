@@ -23,7 +23,6 @@ global_threshold = 'https://raw.githubusercontent.com/acceval/Price-Segmentation
 customised_threshold = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/customised_threshold_final.json'
 price_power_index_threshold   = 'https://raw.githubusercontent.com/acceval/Price-Segmentation/main/price_power_index_final.json'
 
-
 model = Model(env)
 # local url
 url = config.LOCAL_URL
